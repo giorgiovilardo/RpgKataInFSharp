@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="RpgKata.fs" />
+    <Compile Include="Character.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
