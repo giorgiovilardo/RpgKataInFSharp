@@ -1,4 +1,4 @@
-module Tests
+module RpgKataTests
 
 open System
 open Xunit
