@@ -5,11 +5,10 @@ type Status =
     | Dead
 
 type Character =
-    { Health: int
+    { Name: string
+      Health: int
       Level: int
       Status: Status }
-
-type NamedCharacter = { Name: string; Data: Character }
 
 //let private SubtractHealth char qty =
 //    { char with Health = char.Health - qty }
@@ -36,3 +35,15 @@ let HealChar healing char =
         | _ ->
             { char with
                   Health = char.Health + healing }
+
+let normalizeDamage sourceChar destChar damage =
+    match destChar.Level with
+    | level when level - sourceChar.Level >= 5 -> damage / 2
+    | level when level - sourceChar.Level <= 5 -> damage * 2
+    | _ -> damage
+
+let Damage sourceCharacter damage destinationCharacter =
+    if sourceCharacter.Name = destinationCharacter.Name then
+        sourceCharacter
+    else
+        DamageChar damage destinationCharacter
