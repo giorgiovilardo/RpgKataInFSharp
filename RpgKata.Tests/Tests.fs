@@ -105,3 +105,47 @@ let ``Can't damage itself`` () =
     let actual = Damage sourceCharacter 200 destCharacter
 
     Assert.Equal(expected, actual)
+
+[<Fact>]
+let ``Complete round with Damage`` () =
+    let sourceCharacter = baseCharacter
+
+    let destCharacter =
+        { Name = "Mostro"
+          Health = 1000
+          Level = 1
+          Status = Alive }
+
+    let expected =
+        { Name = "Mostro"
+          Health = 800
+          Level = 1
+          Status = Alive }
+
+    Assert.Equal(expected, Damage sourceCharacter 200 destCharacter)
+
+[<Fact>]
+let ``Can only heal itself so baseChar cannot heal anotherChar`` () =
+    let anotherChar =
+        { Name = "Altro"
+          Health = 390
+          Level = 1
+          Status = Alive }
+
+    Assert.Equal(anotherChar, Heal baseCharacter 400 anotherChar)
+
+[<Fact>]
+let ``Can only heal itself so anotherChar can heal anotherChar`` () =
+    let anotherChar =
+        { Name = "Altro"
+          Health = 390
+          Level = 1
+          Status = Alive }
+
+    let anotherCharHealed =
+        { Name = "Altro"
+          Health = 790
+          Level = 1
+          Status = Alive }
+
+    Assert.Equal(anotherCharHealed, Heal anotherChar 400 anotherChar)

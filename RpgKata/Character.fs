@@ -39,11 +39,21 @@ let HealChar healing char =
 let normalizeDamage sourceChar destChar damage =
     match destChar.Level with
     | level when level - sourceChar.Level >= 5 -> damage / 2
-    | level when level - sourceChar.Level <= 5 -> damage * 2
+    | level when level - sourceChar.Level <= -5 -> damage * 2
     | _ -> damage
 
+let isSameCharacter sourceChar destChar = sourceChar.Name = destChar.Name
+
 let Damage sourceCharacter damage destinationCharacter =
-    if sourceCharacter.Name = destinationCharacter.Name then
-        sourceCharacter
-    else
-        DamageChar damage destinationCharacter
+    match isSameCharacter sourceCharacter destinationCharacter with
+    | true -> destinationCharacter
+    | false ->
+        let normalizedDamage =
+            normalizeDamage sourceCharacter destinationCharacter damage
+
+        DamageChar normalizedDamage destinationCharacter
+
+let Heal sourceCharacter healing destinationCharacter =
+    match isSameCharacter sourceCharacter destinationCharacter with
+    | false -> destinationCharacter
+    | true -> HealChar healing sourceCharacter
