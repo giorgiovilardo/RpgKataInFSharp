@@ -28,3 +28,8 @@ Reference: https://github.com/ardalis/kata-catalog/blob/main/katas/RPG%20Combat.
 
 Actually changing the order of the parameters in the damage/heal functions
 was a good idea; now I can preload damage and have a composable `Character -> Character` function.
+
+#### After
+
+* Meh, it's breaking up really quickly
+* Logic is convoluted and starts to become unreadable?
