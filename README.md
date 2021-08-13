@@ -21,5 +21,10 @@ Reference: https://github.com/ardalis/kata-catalog/blob/main/katas/RPG%20Combat.
 #### Before
 
 * Oof, identity again
-  * Maybe I will experiment with a `NamedCharacter` type that has a Name and a `Character` as data
+  * Maybe I will experiment with a `NamedCharacter` type that has a Name and a `Character` as data, to not violate OCP
 * Oof, more parameters
+
+#### Refactor step
+
+Actually changing the order of the parameters in the damage/heal functions
+was a good idea; now I can preload damage and have a composable `Character -> Character` function.

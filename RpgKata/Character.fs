@@ -9,23 +9,25 @@ type Character =
       Level: int
       Status: Status }
 
-let private SubtractHealth char qty =
-    { char with Health = char.Health - qty }
+type NamedCharacter = { Name: string; Data: Character }
 
-let private AddHealth char qty =
-    { char with Health = char.Health + qty }
+//let private SubtractHealth char qty =
+//    { char with Health = char.Health - qty }
+//
+//let private AddHealth char qty =
+//    { char with Health = char.Health + qty }
+//
+//let private killCharIfHealthIsNegative char =
+//    match char.Health with
+//    | hp when hp < 0 -> { char with Health = 0; Status = Dead }
+//    | _ -> char
 
-let private killCharIfHealthIsNegative char =
-    match char.Health with
-    | hp when hp < 0 -> { char with Health = 0; Status = Dead }
-    | _ -> char
-
-let DamageChar char dam =
+let DamageChar dam char =
     match char.Health with
     | hp when hp - dam < 0 -> { char with Health = 0; Status = Dead }
     | _ -> { char with Health = char.Health - dam }
 
-let HealChar char healing =
+let HealChar healing char =
     match char.Status with
     | Dead -> char
     | Alive ->
