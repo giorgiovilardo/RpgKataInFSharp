@@ -3,22 +3,24 @@ module RpgKataTests
 open Character
 open Xunit
 
-let private baseCharacter =
-    { Name = ""
-      Health = 1000
+
+let private baseAliveStats =
+    { Health = 1000
       Level = 1
       Status = Alive }
 
-let private deadCharacter =
-    { Name = ""
-      Health = 0
-      Level = 1
-      Status = Dead }
+let private baseDeadStats = { Health = 0; Level = 1; Status = Dead }
 
-let private DamageFor2000 = DamageChar 2000
-let private DamageFor1000 = DamageChar 1000
-let private HealFor200 = HealChar 200
-let private HealFor100 = HealChar 100
+let private baseCharacter =
+    { Name = "Base"
+      Stats = baseAliveStats }
+
+let private deadCharacter = { Name = "Dead"; Stats = baseDeadStats }
+
+//let private DamageFor2000 = DamageChar 2000
+//let private DamageFor1000 = DamageChar 1000
+//let private HealFor200 = HealChar 200
+//let private HealFor100 = HealChar 100
 
 [<Fact>]
 let ``Kill character if damage is higher than remaining health`` () =

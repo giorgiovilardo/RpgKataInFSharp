@@ -33,3 +33,13 @@ was a good idea; now I can preload damage and have a composable `Character -> Ch
 
 * Meh, it's breaking up really quickly
 * Logic is convoluted and starts to become unreadable?
+
+### Iteration 3
+
+#### Before
+
+* Requisites looks horrendously declared
+* I think it's some kind of ranged can damage ranged + melee, melee only melee?
+* I have to modify again the record?
+
+#### Refactor step
