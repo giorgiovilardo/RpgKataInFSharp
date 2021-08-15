@@ -1,5 +1,7 @@
 module Character
 
+open System.Linq
+
 type Status =
     | Alive
     | Dead
@@ -10,7 +12,36 @@ type CharacterStats =
       Status: Status
       Range: int }
 
-type Character = { Name: string; Stats: CharacterStats }
+type Character =
+    { Name: string
+      Faction: string list option
+      Stats: CharacterStats }
+
+let joinFaction char faction =
+    match char.Faction with
+    | None -> { char with Faction = Some [ faction ] }
+    | Some x ->
+        { char with
+              Faction = Some(faction :: x) }
+
+let leaveFaction char faction =
+    match char.Faction with
+    | None -> char
+    | Some factionList ->
+        match factionList.Length with
+        | 1 -> { char with Faction = None }
+        | _ ->
+            { char with
+                  Faction = Some(factionList |> List.filter (fun f -> f <> faction)) }
+
+let isAlly sourceChar destChar =
+    match sourceChar.Faction, destChar.Faction with
+    | None, _ -> false
+    | _, None -> false
+    | Some x, Some y ->
+        match x.Intersect(y).Count() with
+        | 0 -> false
+        | _ -> true
 
 let normalizeDamage sourceChar destChar damage =
     match destChar.Level with
@@ -52,7 +83,10 @@ let private sanitizeStatus character =
 
 
 let damageCharacter sourceChar destinationChar amount =
-    if checkIfCharIsInRange sourceChar destinationChar |> not then
+    if isAlly sourceChar destinationChar then
+        destinationChar
+    elif checkIfCharIsInRange sourceChar destinationChar
+         |> not then
         destinationChar
     elif sourceChar = destinationChar then
         destinationChar
@@ -68,10 +102,11 @@ let damageCharacter sourceChar destinationChar amount =
                   Stats = newStats }
 
 let healCharacter sourceChar destinationChar amount =
-    match sourceChar = destinationChar with
-    | false -> destinationChar
+    match sourceChar = destinationChar, isAlly sourceChar destinationChar with
+    | false, false -> destinationChar
     | _ ->
         let newStats = addHealth destinationChar.Stats amount
+
         sanitizeStatus
             { destinationChar with
                   Stats = newStats }

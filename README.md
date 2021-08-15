@@ -63,3 +63,13 @@ was a good idea; now I can preload damage and have a composable `Character -> Ch
 * I keep delaying making Characters a DU, but now looks like it's the time
   * I need to implement some sort of a master dispatcher functions that then sends you to the correct damage check?
   * Rest is easy-ish just have a return new record with different faction
+
+#### After
+
+* The DU experiment failed miserably (see the du branch)
+* Starting to understand how to double pattern match
+* Loved the ease of adding the new heal condition basically reduces to a truth table
+* Love way less the damage function
+* Liked the join/leave faction stuff
+* Starting to lose track of stuff, how to organize?
+  * In tests even more with all the helpers to generate characters
