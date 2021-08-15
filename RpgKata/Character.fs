@@ -7,7 +7,8 @@ type Status =
 type CharacterStats =
     { Health: int
       Level: int
-      Status: Status }
+      Status: Status
+      Range: int }
 
 type Character = { Name: string; Stats: CharacterStats }
 
@@ -16,6 +17,11 @@ let normalizeDamage sourceChar destChar damage =
     | level when level - sourceChar.Level >= 5 -> damage / 2
     | level when level - sourceChar.Level <= -5 -> damage * 2
     | _ -> damage
+
+let checkIfCharIsInRange sourceChar destChar =
+    match (sourceChar.Stats.Range, destChar.Stats.Range) with
+    | sourceRange, destRange when sourceRange < destRange -> false
+    | _ -> true
 
 // Can this become "modifyHealth" and passing a lambda to parameterize
 // the action? It looks unreadable long term tho.
@@ -46,7 +52,9 @@ let private sanitizeStatus character =
 
 
 let damageCharacter sourceChar destinationChar amount =
-    if sourceChar = destinationChar then
+    if checkIfCharIsInRange sourceChar destinationChar |> not then
+        destinationChar
+    elif sourceChar = destinationChar then
         destinationChar
     else
         let damage =
@@ -60,11 +68,10 @@ let damageCharacter sourceChar destinationChar amount =
                   Stats = newStats }
 
 let healCharacter sourceChar destinationChar amount =
-    if sourceChar <> destinationChar then
-        destinationChar
-    else
+    match sourceChar = destinationChar with
+    | false -> destinationChar
+    | _ ->
         let newStats = addHealth destinationChar.Stats amount
-
         sanitizeStatus
             { destinationChar with
                   Stats = newStats }

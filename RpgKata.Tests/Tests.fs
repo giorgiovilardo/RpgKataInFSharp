@@ -7,9 +7,26 @@ open Xunit
 let private baseAliveStats =
     { Health = 1000
       Level = 1
-      Status = Alive }
+      Status = Alive
+      Range = 2 }
 
-let private baseDeadStats = { Health = 0; Level = 1; Status = Dead }
+let private baseAliveRangedStats =
+    { Health = 1000
+      Level = 1
+      Status = Alive
+      Range = 30 }
+
+let private baseDeadStats =
+    { Health = 0
+      Level = 1
+      Status = Dead
+      Range = 2 }
+
+let private baseDeadRangedStats =
+    { Health = 0
+      Level = 1
+      Status = Dead
+      Range = 30 }
 
 let private baseCharacter =
     { Name = "Base"
@@ -18,6 +35,14 @@ let private baseCharacter =
 let private baseTarget =
     { Name = "Target"
       Stats = baseAliveStats }
+
+let private baseRangedCharacter =
+    { Name = "Base"
+      Stats = baseAliveRangedStats }
+
+let private baseRangedTarget =
+    { Name = "Target"
+      Stats = baseAliveRangedStats }
 
 let private deadCharacter =
     { Name = "Target"
@@ -45,7 +70,8 @@ let ``Don't kill character if damage is less than remaining health`` () =
           Stats =
               { Health = 0
                 Level = 1
-                Status = Alive } }
+                Status = Alive
+                Range = 2 } }
 
     let actual = damageFor1000 baseCharacter baseTarget
     Assert.Equal(expected, actual)
@@ -119,7 +145,8 @@ let ``Can only heal itself so a Character cannot heal another Character`` () =
           Stats =
               { Health = 390
                 Level = 1
-                Status = Alive } }
+                Status = Alive
+                Range = 2 } }
 
     Assert.Equal(damagedChar, healFor200 baseCharacter damagedChar)
 
@@ -130,10 +157,48 @@ let ``Can only heal itself so anotherChar can heal anotherChar`` () =
           Stats =
               { Health = 390
                 Level = 1
-                Status = Alive } }
+                Status = Alive
+                Range = 2 } }
 
     let expected =
         { damagedChar with
               Stats = { damagedChar.Stats with Health = 590 } }
 
     Assert.Equal(expected, healFor200 damagedChar damagedChar)
+
+[<Fact>]
+let ``A Character can only damage a character in range`` () =
+    // Truth table of who damages who:
+    //       | R | M |
+    // Ranged| Y | Y |
+    // Melee | N | Y |
+    let damagedMeleeChar =
+        { Name = "Target"
+          Stats =
+              { Health = 390
+                Level = 1
+                Status = Alive
+                Range = 2 } }
+
+    let damagedRangedChar =
+        { Name = "Target"
+          Stats =
+              { Health = 390
+                Level = 1
+                Status = Alive
+                Range = 30 } }
+    // Ranged damages ranged
+    Assert.Equal(
+        damagedRangedChar,
+        damageCharacter
+            baseRangedCharacter
+            { baseRangedCharacter with
+                  Name = "Target" }
+            610
+    )
+    // Ranged damages melee
+    Assert.Equal(damagedMeleeChar, damageCharacter baseRangedCharacter baseTarget 610)
+    // Melee damages melee
+    Assert.Equal(damagedMeleeChar, damageCharacter baseCharacter baseTarget 610)
+    // Melee can't damage ranged
+    Assert.Equal(baseRangedCharacter, damageCharacter baseCharacter baseRangedCharacter 610)
