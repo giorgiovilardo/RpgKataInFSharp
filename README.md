@@ -43,3 +43,7 @@ was a good idea; now I can preload damage and have a composable `Character -> Ch
 * I have to modify again the record?
 
 #### Refactor step
+
+* Yes, "refactor"
+* Tried to rationalize everything
+* ClassedCharacter type then needs generic functions? should character be a DU?
