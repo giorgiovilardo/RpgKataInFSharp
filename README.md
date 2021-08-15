@@ -55,3 +55,11 @@ was a good idea; now I can preload damage and have a composable `Character -> Ch
   * I don't get how to correctly chain them specially when a bool check is required to proceed and I don't want to use `failwith`
     * probably validation via `Some/None` type? Or a `ValidatedCharacter` type?
   * Then I need to carry `Some/None` or `Ok/Error` through the whole pipe
+
+### Iteration 4
+
+#### Before
+
+* I keep delaying making Characters a DU, but now looks like it's the time
+  * I need to implement some sort of a master dispatcher functions that then sends you to the correct damage check?
+  * Rest is easy-ish just have a return new record with different faction
