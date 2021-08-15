@@ -63,3 +63,7 @@ was a good idea; now I can preload damage and have a composable `Character -> Ch
 * I keep delaying making Characters a DU, but now looks like it's the time
   * I need to implement some sort of a master dispatcher functions that then sends you to the correct damage check?
   * Rest is easy-ish just have a return new record with different faction
+
+#### DU BRANCH
+
+* Wtf i do? My funcs are for Character which should be able to iterate a la inheritance over all versions of Character? Why I have to rematch and unwrap?

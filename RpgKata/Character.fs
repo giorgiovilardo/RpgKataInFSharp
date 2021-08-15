@@ -10,7 +10,16 @@ type CharacterStats =
       Status: Status
       Range: int }
 
-type Character = { Name: string; Stats: CharacterStats }
+type CharacterWithoutFaction = { Name: string; Stats: CharacterStats }
+type CharacterWithFaction = {
+    Name: string
+    Faction: string
+    Stats: CharacterStats
+}
+
+type Character =
+    | CharacterWithFaction of CharacterWithFaction
+    | CharacterWithoutFaction of CharacterWithoutFaction
 
 let normalizeDamage sourceChar destChar damage =
     match destChar.Level with
@@ -18,7 +27,7 @@ let normalizeDamage sourceChar destChar damage =
     | level when level - sourceChar.Level <= -5 -> damage * 2
     | _ -> damage
 
-let checkIfCharIsInRange sourceChar destChar =
+let checkIfCharIsInRange (sourceChar:Character) (destChar:Character) =
     match (sourceChar.Stats.Range, destChar.Stats.Range) with
     | sourceRange, destRange when sourceRange < destRange -> false
     | _ -> true
