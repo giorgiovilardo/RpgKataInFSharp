@@ -15,64 +15,78 @@ let private baseCharacter =
     { Name = "Base"
       Stats = baseAliveStats }
 
-let private deadCharacter = { Name = "Dead"; Stats = baseDeadStats }
+let private baseTarget =
+    { Name = "Target"
+      Stats = baseAliveStats }
 
-//let private DamageFor2000 = DamageChar 2000
-//let private DamageFor1000 = DamageChar 1000
-//let private HealFor200 = HealChar 200
-//let private HealFor100 = HealChar 100
+let private deadCharacter =
+    { Name = "Target"
+      Stats = baseDeadStats }
+
+let private damageFor2000 sourceChar destChar =
+    damageCharacter sourceChar destChar 2000
+
+let private damageFor1000 sourceChar destChar =
+    damageCharacter sourceChar destChar 1000
+
+let private healFor200 sourceChar destChar = healCharacter sourceChar destChar 200
+let private healFor100 sourceChar destChar = healCharacter sourceChar destChar 100
 
 [<Fact>]
 let ``Kill character if damage is higher than remaining health`` () =
     let expected = deadCharacter
-    let actual = DamageFor2000 baseCharacter
+    let actual = damageFor2000 baseCharacter baseTarget
     Assert.Equal(expected, actual)
 
 [<Fact>]
 let ``Don't kill character if damage is less than remaining health`` () =
     let expected =
-        { Name = ""
-          Health = 0
-          Level = 1
-          Status = Alive }
+        { Name = "Target"
+          Stats =
+              { Health = 0
+                Level = 1
+                Status = Alive } }
 
-    let actual = DamageFor1000 baseCharacter
+    let actual = damageFor1000 baseCharacter baseTarget
     Assert.Equal(expected, actual)
 
 [<Fact>]
 let ``Don't heal character if he's dead`` () =
     let expected = deadCharacter
-    let actual = HealFor200 deadCharacter
+    let actual = healFor200 deadCharacter deadCharacter
     Assert.Equal(expected, actual)
 
 [<Fact>]
 let ``Don't heal character if he is at max health`` () =
     let expected = baseCharacter
-    let actual = HealFor200 baseCharacter
+    let actual = healFor200 baseCharacter baseCharacter
     Assert.Equal(expected, actual)
 
 [<Fact>]
 let ``Don't overheal character`` () =
     let character =
-        { Name = ""
-          Health = 999
-          Level = 1
-          Status = Alive }
+        { baseCharacter with
+              Stats =
+                  { baseCharacter.Stats with
+                        Health = 999 } }
 
     let expected = baseCharacter
-    let actual = HealFor200 character
+    let actual = healFor200 character character
     Assert.Equal(expected, actual)
 
 [<Fact>]
 let ``Heal character if he is alive and at less than max health`` () =
     let character =
-        { Name = ""
-          Health = 800
-          Level = 1
-          Status = Alive }
+        { baseCharacter with
+              Stats =
+                  { baseCharacter.Stats with
+                        Health = 800 } }
 
-    let expected = { character with Health = 900 }
-    let actual = HealFor100 character
+    let expected =
+        { character with
+              Stats = { character.Stats with Health = 900 } }
+
+    let actual = healFor100 character character
     Assert.Equal(expected, actual)
 
 [<Fact>]
@@ -80,74 +94,46 @@ let ``If level is higher on target, damage is reduced`` () =
     let sourceCharacter = baseCharacter
 
     let destCharacter =
-        { Name = ""
-          Health = 1000
-          Level = 40
-          Status = Alive }
+        { baseTarget with
+              Stats = { baseTarget.Stats with Level = 10 } }
 
-    Assert.Equal(100, normalizeDamage sourceCharacter destCharacter 200)
+    Assert.Equal(200 / 2, normalizeDamage sourceCharacter.Stats destCharacter.Stats 200)
 
 [<Fact>]
-let ``If level is lower on target, damage is reduced`` () =
+let ``If level is lower on target, damage is doubled`` () =
     let sourceCharacter =
-        { Name = ""
-          Health = 1000
-          Level = 40
-          Status = Alive }
+        { baseCharacter with
+              Stats = { baseCharacter.Stats with Level = 10 } }
 
     let destCharacter = baseCharacter
-
-    Assert.Equal(400, normalizeDamage sourceCharacter destCharacter 200)
-
-[<Fact>]
-let ``Can't damage itself`` () =
-    let sourceCharacter = baseCharacter
-    let destCharacter = baseCharacter
-    let expected = baseCharacter
-    let actual = Damage sourceCharacter 200 destCharacter
-
-    Assert.Equal(expected, actual)
+    Assert.Equal(200 * 2, normalizeDamage sourceCharacter.Stats destCharacter.Stats 200)
 
 [<Fact>]
-let ``Complete round with Damage`` () =
-    let sourceCharacter = baseCharacter
-
-    let destCharacter =
-        { Name = "Mostro"
-          Health = 1000
-          Level = 1
-          Status = Alive }
-
-    let expected =
-        { Name = "Mostro"
-          Health = 800
-          Level = 1
-          Status = Alive }
-
-    Assert.Equal(expected, Damage sourceCharacter 200 destCharacter)
+let ``A character can't damage itself`` () =
+    Assert.Equal(baseCharacter, damageFor2000 baseCharacter baseCharacter)
 
 [<Fact>]
-let ``Can only heal itself so baseChar cannot heal anotherChar`` () =
-    let anotherChar =
-        { Name = "Altro"
-          Health = 390
-          Level = 1
-          Status = Alive }
+let ``Can only heal itself so a Character cannot heal another Character`` () =
+    let damagedChar =
+        { Name = "Target"
+          Stats =
+              { Health = 390
+                Level = 1
+                Status = Alive } }
 
-    Assert.Equal(anotherChar, Heal baseCharacter 400 anotherChar)
+    Assert.Equal(damagedChar, healFor200 baseCharacter damagedChar)
 
 [<Fact>]
 let ``Can only heal itself so anotherChar can heal anotherChar`` () =
-    let anotherChar =
-        { Name = "Altro"
-          Health = 390
-          Level = 1
-          Status = Alive }
+    let damagedChar =
+        { Name = "Target"
+          Stats =
+              { Health = 390
+                Level = 1
+                Status = Alive } }
 
-    let anotherCharHealed =
-        { Name = "Altro"
-          Health = 790
-          Level = 1
-          Status = Alive }
+    let expected =
+        { damagedChar with
+              Stats = { damagedChar.Stats with Health = 590 } }
 
-    Assert.Equal(anotherCharHealed, Heal anotherChar 400 anotherChar)
+    Assert.Equal(expected, healFor200 damagedChar damagedChar)
