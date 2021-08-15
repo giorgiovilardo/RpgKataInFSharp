@@ -44,13 +44,13 @@ let isAlly sourceChar destChar =
         | _ -> true
 
 let normalizeDamage sourceChar destChar damage =
-    match destChar.Level with
-    | level when level - sourceChar.Level >= 5 -> damage / 2
-    | level when level - sourceChar.Level <= -5 -> damage * 2
+    match destChar.Level, sourceChar.Level with
+    | targetLevel, sourceLevel when targetLevel - sourceLevel >= 5 -> damage / 2
+    | targetLevel, sourceLevel when targetLevel - sourceLevel <= 5 -> damage / 2
     | _ -> damage
 
 let checkIfCharIsInRange sourceChar destChar =
-    match (sourceChar.Stats.Range, destChar.Stats.Range) with
+    match sourceChar.Stats.Range, destChar.Stats.Range with
     | sourceRange, destRange when sourceRange < destRange -> false
     | _ -> true
 
