@@ -47,3 +47,11 @@ was a good idea; now I can preload damage and have a composable `Character -> Ch
 * Yes, "refactor"
 * Tried to rationalize everything
 * ClassedCharacter type then needs generic functions? should character be a DU?
+
+#### After
+
+* kinda easy to implement the range check
+* functions are starting to have too many responsibilities and being too big
+  * I don't get how to correctly chain them specially when a bool check is required to proceed and I don't want to use `failwith`
+    * probably validation via `Some/None` type? Or a `ValidatedCharacter` type?
+  * Then I need to carry `Some/None` or `Ok/Error` through the whole pipe
