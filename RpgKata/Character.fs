@@ -41,9 +41,9 @@ let isAlly sourceChar destChar =
     | Some x, Some y -> x.Intersect(y).Count() <> 0
 
 let normalizeDamage sourceChar destChar damage =
-    match destChar.Level, sourceChar.Level with
-    | targetLevel, sourceLevel when targetLevel - sourceLevel >= 5 -> damage / 2
-    | targetLevel, sourceLevel when targetLevel - sourceLevel <= -5 -> damage * 2
+    match destChar.Level - sourceChar.Level with
+    | levelDelta when levelDelta >= 5 -> damage / 2
+    | levelDelta when levelDelta <= -5 -> damage * 2
     | _ -> damage
 
 let checkIfCharIsInRange sourceChar destChar =
