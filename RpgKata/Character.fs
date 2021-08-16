@@ -2,10 +2,6 @@ module Character
 
 open System.Linq
 
-type Status =
-    | Alive
-    | Dead
-
 type PropStatus =
     | Intact
     | Destroyed
@@ -15,10 +11,14 @@ type Prop =
       Health: int
       PropStatus: PropStatus }
 
+type CharacterStatus =
+    | Alive
+    | Dead
+
 type CharacterStats =
     { Health: int
       Level: int
-      Status: Status
+      Status: CharacterStatus
       Range: int }
 
 type Character =
@@ -122,12 +122,12 @@ let healCharacter sourceChar destinationChar amount =
             { destinationChar with
                   Stats = newStats }
 
-let damage (sourceChar: Character) (destEntity: Entity) (amount: int) : Entity =
+let damage sourceChar destEntity amount =
     match destEntity with
     | Character c -> Character(damageCharacter sourceChar c amount)
     | Prop p -> Prop(damageProp p amount)
 
-let heal (sourceChar: Character) (destEntity: Entity) (amount: int) : Entity =
+let heal sourceChar destEntity amount =
     match destEntity with
     | Character c -> Character(healCharacter sourceChar c amount)
     | Prop p -> Prop p
