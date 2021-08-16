@@ -36,7 +36,7 @@ let leaveFaction char faction =
 
 let isAlly sourceChar destChar =
     match sourceChar.Faction, destChar.Faction with
-    | None, _ -> false
+    | None, _
     | _, None -> false
     | Some x, Some y ->
         match x.Intersect(y).Count() with
@@ -46,7 +46,7 @@ let isAlly sourceChar destChar =
 let normalizeDamage sourceChar destChar damage =
     match destChar.Level, sourceChar.Level with
     | targetLevel, sourceLevel when targetLevel - sourceLevel >= 5 -> damage / 2
-    | targetLevel, sourceLevel when targetLevel - sourceLevel <= 5 -> damage / 2
+    | targetLevel, sourceLevel when targetLevel - sourceLevel <= -5 -> damage * 2
     | _ -> damage
 
 let checkIfCharIsInRange sourceChar destChar =
