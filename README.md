@@ -99,3 +99,10 @@ hard to understand everything and implement at least some of the suggestions :)
 * Generalized the function to interact with health
 * Organized better the `match` statements
 * Removed the `Option` on the Faction, now it's just `string list`
+* Experimented with left-side deconstruction (looks maybe not good with nested records)
+
+### Things to focus on?
+
+* More strict domain modeling
+* Better functional patterns
+* Better project structure

@@ -55,10 +55,8 @@ let normalizeDamage sourceChar destChar damage =
     | levelDelta when levelDelta <= -5 -> damage * 2
     | _ -> damage
 
-let checkIfCharIsInRange sourceChar destChar =
-    match sourceChar.Stats.Range, destChar.Stats.Range with
-    | sourceRange, destRange when sourceRange < destRange -> false
-    | _ -> true
+let checkIfCharIsInRange { Stats = { Range = sourceRange } } { Stats = { Range = destRange } } =
+    sourceRange >= destRange
 
 let private healthInteractor (fn: int -> int -> int) (char: CharacterStats) qty =
     { char with
