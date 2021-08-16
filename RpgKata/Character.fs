@@ -6,6 +6,15 @@ type Status =
     | Alive
     | Dead
 
+type PropStatus =
+    | Intact
+    | Destroyed
+
+type Prop =
+    { Name: string
+      Health: int
+      PropStatus: PropStatus }
+
 type CharacterStats =
     { Health: int
       Level: int
@@ -16,6 +25,10 @@ type Character =
     { Name: string
       Faction: string list option
       Stats: CharacterStats }
+
+type Entity =
+    | Character of Character
+    | Prop of Prop
 
 let joinFaction char faction =
     match char.Faction with
@@ -53,10 +66,10 @@ let checkIfCharIsInRange sourceChar destChar =
 
 // Can this become "modifyHealth" and passing a lambda to parameterize
 // the action? It looks unreadable long term tho.
-let private subtractHealth char qty =
+let private subtractHealth (char: CharacterStats) qty =
     { char with Health = char.Health - qty }
 
-let private addHealth char qty =
+let private addHealth (char: CharacterStats) qty =
     { char with Health = char.Health + qty }
 
 let private sanitizeStatus character =
@@ -77,7 +90,15 @@ let private sanitizeStatus character =
                   Stats = { character.Stats with Health = 1000 } }
         | _ -> character
 
-
+let damageProp (destinationProp: Prop) amount =
+    match destinationProp.Health - amount with
+    | remainingHp when remainingHp >= 0 ->
+        { destinationProp with
+              Health = remainingHp }
+    | _ ->
+        { destinationProp with
+              Health = 0
+              PropStatus = Destroyed }
 
 let damageCharacter sourceChar destinationChar amount =
     if isAlly sourceChar destinationChar then
@@ -107,3 +128,13 @@ let healCharacter sourceChar destinationChar amount =
         sanitizeStatus
             { destinationChar with
                   Stats = newStats }
+
+let damage (sourceChar: Character) (destEntity: Entity) (amount: int) : Entity =
+    match destEntity with
+    | Character c -> Character(damageCharacter sourceChar c amount)
+    | Prop p -> Prop(damageProp p amount)
+
+let heal (sourceChar: Character) (destEntity: Entity) (amount: int) : Entity =
+    match destEntity with
+    | Character c -> Character(healCharacter sourceChar c amount)
+    | Prop p -> Prop p

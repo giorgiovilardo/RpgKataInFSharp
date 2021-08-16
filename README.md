@@ -79,3 +79,13 @@ was a good idea; now I can preload damage and have a composable `Character -> Ch
 #### Before
 
 * Looks extremely hard/program breaking.
+
+#### After
+
+* I have the gut feeling the solution is "wrong"
+* Have not tested the `damage` and `heal` final wrappers because the underlying functions are unittested.
+  * It's basically just a constructor for an `Entity`.
+* Seems like extending types with DU is a bit of a chore
+  * Better patterns to discover or it's just the price to pay in spending more time in the ide less in the debugger?
+* The requirement of not being able to heal a Prop is easy not using inheritance and whatnot; just don't have a function doing it
+  * No checks to write, return the prop itself

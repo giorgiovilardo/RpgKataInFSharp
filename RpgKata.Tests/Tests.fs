@@ -267,3 +267,31 @@ let ``An Ally can heal another Ally`` () =
                         Health = 600 } }
 
     Assert.Equal(expected, healFor200 baseCharacter damagedCharacter)
+
+[<Fact>]
+let ``Can damage a Prop via precise function`` () =
+    let baseProp =
+        { Name = "Tree"
+          Health = 2000
+          PropStatus = Intact }
+
+    let expected =
+        { Name = "Tree"
+          Health = 1
+          PropStatus = Intact }
+
+    Assert.Equal(expected, damageProp baseProp 1999)
+
+[<Fact>]
+let ``Can kill a Prop via precise function`` () =
+    let baseProp =
+        { Name = "Tree"
+          Health = 2000
+          PropStatus = Intact }
+
+    let expected =
+        { Name = "Tree"
+          Health = 0
+          PropStatus = Destroyed }
+
+    Assert.Equal(expected, damageProp baseProp 9999)
