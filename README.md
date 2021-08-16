@@ -73,3 +73,9 @@ was a good idea; now I can preload damage and have a composable `Character -> Ch
 * Liked the join/leave faction stuff
 * Starting to lose track of stuff, how to organize?
   * In tests even more with all the helpers to generate characters
+
+### Iteration 5
+
+#### Before
+
+* Looks extremely hard/program breaking.
