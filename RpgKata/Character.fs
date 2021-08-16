@@ -63,13 +63,13 @@ let checkIfCharIsInRange sourceChar destChar =
     | sourceRange, destRange when sourceRange < destRange -> false
     | _ -> true
 
-// Can this become "modifyHealth" and passing a lambda to parameterize
-// the action? It looks unreadable long term tho.
-let private subtractHealth (char: CharacterStats) qty =
-    { char with Health = char.Health - qty }
+let private healthInteractor (fn: int -> int -> int) (char: CharacterStats) qty =
+    { char with
+          Health = fn char.Health qty }
 
-let private addHealth (char: CharacterStats) qty =
-    { char with Health = char.Health + qty }
+let private subtractHealth = healthInteractor (-)
+
+let private addHealth = healthInteractor (+)
 
 let private sanitizeStatus character =
     match character.Stats.Status with
@@ -100,14 +100,11 @@ let damageProp (destinationProp: Prop) amount =
               PropStatus = Destroyed }
 
 let damageCharacter sourceChar destinationChar amount =
-    if isAlly sourceChar destinationChar then
-        destinationChar
-    elif checkIfCharIsInRange sourceChar destinationChar
-         |> not then
-        destinationChar
-    elif sourceChar = destinationChar then
-        destinationChar
-    else
+    match sourceChar, destinationChar with
+    | source, dest when isAlly source dest -> dest
+    | source, dest when not (checkIfCharIsInRange source dest) -> dest
+    | source, dest when source = dest -> dest
+    | _ ->
         let damage =
             normalizeDamage sourceChar.Stats destinationChar.Stats amount
 

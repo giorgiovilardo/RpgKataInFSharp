@@ -89,3 +89,8 @@ was a good idea; now I can preload damage and have a composable `Character -> Ch
   * Better patterns to discover or it's just the price to pay in spending more time in the ide less in the debugger?
 * The requirement of not being able to heal a Prop is easy not using inheritance and whatnot; just don't have a function doing it
   * No checks to write, return the prop itself
+
+### Random Successive Refactors
+
+* Generalized the function to interact with health
+* Organized better the `match` statements
