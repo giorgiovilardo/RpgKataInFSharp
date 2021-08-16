@@ -2,7 +2,6 @@ module RpgKataTests
 
 open Character
 open Xunit
-open Xunit
 
 
 let private baseAliveStats =
