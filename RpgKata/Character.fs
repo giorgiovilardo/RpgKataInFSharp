@@ -38,10 +38,7 @@ let isAlly sourceChar destChar =
     match sourceChar.Faction, destChar.Faction with
     | None, _
     | _, None -> false
-    | Some x, Some y ->
-        match x.Intersect(y).Count() with
-        | 0 -> false
-        | _ -> true
+    | Some x, Some y -> x.Intersect(y).Count() <> 0
 
 let normalizeDamage sourceChar destChar damage =
     match destChar.Level, sourceChar.Level with
