@@ -92,5 +92,10 @@ was a good idea; now I can preload damage and have a composable `Character -> Ch
 
 ### Random Successive Refactors
 
+Many thanks to **nffa** from the FSSF Slack chat for the time spent for the
+fantastic review on this code. Some things were over my head but I'm trying
+hard to understand everything and implement at least some of the suggestions :)
+
 * Generalized the function to interact with health
 * Organized better the `match` statements
+* Removed the `Option` on the Faction, now it's just `string list`

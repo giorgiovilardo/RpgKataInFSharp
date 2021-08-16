@@ -23,7 +23,7 @@ type CharacterStats =
 
 type Character =
     { Name: string
-      Faction: string list option
+      Faction: string list
       Stats: CharacterStats }
 
 type Entity =
@@ -32,25 +32,22 @@ type Entity =
 
 let joinFaction char faction =
     match char.Faction with
-    | None -> { char with Faction = Some [ faction ] }
-    | Some x ->
-        { char with
-              Faction = Some(faction :: x) }
+    | [] -> { char with Faction = [ faction ] }
+    | xs -> { char with Faction = faction :: xs }
 
 let leaveFaction char faction =
-    match char.Faction with
-    | None -> char
-    | Some factionList ->
-        match factionList.Length with
-        | 1 -> { char with Faction = None }
-        | _ ->
-            { char with
-                  Faction = Some(factionList |> List.filter (fun f -> f <> faction)) }
+    match char.Faction.Length, char.Faction with
+    | 0, _ -> char
+    | _, xs ->
+        { char with
+              Faction = xs |> List.filter (fun f -> f <> faction) }
 
 let isAlly sourceChar destChar =
-    match sourceChar.Faction, destChar.Faction with
-    | Some x, Some y -> x.Intersect(y).Count() <> 0
-    | _ -> false
+    sourceChar
+        .Faction
+        .Intersect(destChar.Faction)
+        .Count()
+    <> 0
 
 let normalizeDamage sourceChar destChar damage =
     match destChar.Level - sourceChar.Level with

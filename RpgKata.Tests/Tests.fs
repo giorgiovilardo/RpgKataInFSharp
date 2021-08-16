@@ -30,27 +30,27 @@ let private baseDeadRangedStats =
 
 let private baseCharacter =
     { Name = "Base"
-      Faction = None
+      Faction = []
       Stats = baseAliveStats }
 
 let private baseTarget =
     { Name = "Target"
-      Faction = None
+      Faction = []
       Stats = baseAliveStats }
 
 let private baseRangedCharacter =
     { Name = "Base"
-      Faction = None
+      Faction = []
       Stats = baseAliveRangedStats }
 
 let private baseRangedTarget =
     { Name = "Target"
-      Faction = None
+      Faction = []
       Stats = baseAliveRangedStats }
 
 let private deadCharacter =
     { Name = "Target"
-      Faction = None
+      Faction = []
       Stats = baseDeadStats }
 
 let private damageFor2000 sourceChar destChar =
@@ -72,7 +72,7 @@ let ``Kill character if damage is higher than remaining health`` () =
 let ``Don't kill character if damage is less than remaining health`` () =
     let expected =
         { Name = "Target"
-          Faction = None
+          Faction = []
           Stats =
               { Health = 0
                 Level = 1
@@ -148,7 +148,7 @@ let ``A character can't damage itself`` () =
 let ``Can only heal itself so a Character cannot heal another Character`` () =
     let damagedChar =
         { Name = "Target"
-          Faction = None
+          Faction = []
           Stats =
               { Health = 390
                 Level = 1
@@ -161,7 +161,7 @@ let ``Can only heal itself so a Character cannot heal another Character`` () =
 let ``Can only heal itself so anotherChar can heal anotherChar`` () =
     let damagedChar =
         { Name = "Target"
-          Faction = None
+          Faction = []
           Stats =
               { Health = 390
                 Level = 1
@@ -182,7 +182,7 @@ let ``A Character can only damage a character in range`` () =
     // Melee | N | Y |
     let damagedMeleeChar =
         { Name = "Target"
-          Faction = None
+          Faction = []
           Stats =
               { Health = 390
                 Level = 1
@@ -191,7 +191,7 @@ let ``A Character can only damage a character in range`` () =
 
     let damagedRangedChar =
         { Name = "Target"
-          Faction = None
+          Faction = []
           Stats =
               { Health = 390
                 Level = 1
@@ -216,36 +216,36 @@ let ``A Character can only damage a character in range`` () =
 [<Fact>]
 let ``A character can join a faction`` () =
     let joinedChar = joinFaction baseCharacter "Orcs"
-    Assert.Equal(Some [ "Orcs" ], joinedChar.Faction)
+    Assert.Equal<string list>([ "Orcs" ], joinedChar.Faction)
 
 [<Fact>]
 let ``A character can join more than one faction`` () =
     let joinedChar = joinFaction baseCharacter "Orcs"
     let joinedChar = joinFaction joinedChar "Goblins"
-    Assert.Equal(Some [ "Goblins"; "Orcs" ], joinedChar.Faction)
+    Assert.Equal<string list>([ "Goblins"; "Orcs" ], joinedChar.Faction)
 
 [<Fact>]
 let ``A character can leave a faction`` () =
     let joinedChar = joinFaction baseCharacter "Orcs"
     let joinedChar = joinFaction joinedChar "Goblins"
     let joinedChar = leaveFaction joinedChar "Orcs"
-    Assert.Equal(Some [ "Goblins" ], joinedChar.Faction)
+    Assert.Equal<string list>([ "Goblins" ], joinedChar.Faction)
 
 [<Fact>]
 let ``A character who leaves last faction goes back to None`` () =
     let joinedChar = joinFaction baseCharacter "Orcs"
     let joinedChar = leaveFaction joinedChar "Orcs"
-    Assert.Equal(None, joinedChar.Faction)
+    Assert.Equal<string list>([], joinedChar.Faction)
 
 [<Fact>]
 let ``An Ally cannot damage another Ally`` () =
     let baseCharacter =
         { baseCharacter with
-              Faction = Some [ "Goblins" ] }
+              Faction = [ "Goblins" ] }
 
     let expected =
         { baseTarget with
-              Faction = Some [ "Goblins" ] }
+              Faction = [ "Goblins" ] }
 
     Assert.Equal(expected, damageFor2000 baseCharacter expected)
 
@@ -253,11 +253,11 @@ let ``An Ally cannot damage another Ally`` () =
 let ``An Ally can heal another Ally`` () =
     let baseCharacter =
         { baseCharacter with
-              Faction = Some [ "Goblins" ] }
+              Faction = [ "Goblins" ] }
 
     let damagedCharacter =
         { baseTarget with
-              Faction = Some [ "Goblins" ]
+              Faction = [ "Goblins" ]
               Stats = { baseTarget.Stats with Health = 400 } }
 
     let expected =
