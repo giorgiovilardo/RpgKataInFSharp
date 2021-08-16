@@ -49,9 +49,8 @@ let leaveFaction char faction =
 
 let isAlly sourceChar destChar =
     match sourceChar.Faction, destChar.Faction with
-    | None, _
-    | _, None -> false
     | Some x, Some y -> x.Intersect(y).Count() <> 0
+    | _ -> false
 
 let normalizeDamage sourceChar destChar damage =
     match destChar.Level - sourceChar.Level with
