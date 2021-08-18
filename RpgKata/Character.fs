@@ -42,12 +42,19 @@ let leaveFaction char faction =
         { char with
               Faction = xs |> List.filter (fun f -> f <> faction) }
 
+// Which is more readable? This...
 let isAlly sourceChar destChar =
     sourceChar
         .Faction
         .Intersect(destChar.Faction)
         .Count()
     <> 0
+
+// or this? HM inference helps, and in the IDE probably
+// isAllyDestructured is easier to grasp. Outside the IDE,
+// I don't really know. Look for external input!
+let isAllyDestructured { Faction = srcFactions } { Faction = dstFactions } =
+    srcFactions.Intersect(dstFactions).Count() <> 0
 
 let normalizeDamage sourceChar destChar damage =
     match destChar.Level - sourceChar.Level with
