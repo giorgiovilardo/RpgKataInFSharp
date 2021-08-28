@@ -36,11 +36,9 @@ let joinFaction char faction =
     | xs -> { char with Faction = faction :: xs }
 
 let leaveFaction char faction =
-    match char.Faction.Length, char.Faction with
-    | 0, _ -> char
-    | _, xs ->
-        { char with
-              Faction = xs |> List.filter (fun f -> f <> faction) }
+    match char.Faction with
+    | [] -> char
+    | xs -> { char with Faction = xs |> List.filter (fun f -> f <> faction) }
 
 // Which is more readable? This...
 let isAlly sourceChar destChar =
